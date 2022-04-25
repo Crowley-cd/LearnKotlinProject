@@ -1,0 +1,148 @@
+package cinema
+public var seats = 0
+public  var rows = 0
+public  var price = 0
+public  var totalprice = 0
+public  var totalpriceall = 0
+public  var count = -1
+public  var sizeofhall = 0
+public  var select = -111
+public val list = mutableListOf<MutableList<String>>()
+public val ptick = mutableListOf<MutableList<String>>()
+
+/**
+need save to resault after buy the ticker
+ */
+fun main() {
+    println("Enter the number of rows:")
+    print("> ")
+    rows = readln().toInt()
+    println("Enter the number of seats in each row:")
+    print("> ")
+    seats = readln().toInt()
+    sizeofhall = rows * seats
+
+    list.clear()
+    val r = rows
+    val s = seats
+    for (i in 0..rows){ // Make rows
+        list.add(mutableListOf(i.toString()))
+    }
+    for (j in 1..s){ // Make first line
+        list[0].add(j , j.toString())
+    }
+    for (k in 1..rows  .toInt()) { // Make All Elements ( S)
+        for (o in 1..seats.toInt()) {
+            if (k < r) {
+                list[k].add("S")
+            } else {
+                list[k].add("S")
+            }
+        }
+    }
+    showroom()
+    mainmenu() // call the menu
+
+}
+
+fun buy() {
+        println("")
+        println("Enter a row number:")
+        print("> ")
+        var selrow: Int = readln().toInt()
+        println("Enter a seat number in that row:")
+        print("> ")
+        var selseat: Int = readln().toInt()
+        if (selrow > rows || selseat > seats || selrow < 1 || selseat < 1) {
+            println("Wrong input!")
+            selrow = 0
+            selseat = 0
+            buy()
+        }
+        if (list[selrow][selseat] == "B") {
+            println("That ticket has already been purchased!")
+            selrow = 0
+            selseat = 0
+            buy()
+        }
+        count ++
+        ptick.add(mutableListOf(count.toString()))
+        ptick[count].add(selrow.toString())        // add to purchatsed list bought tickets
+        ptick[count].add(selseat.toString())
+
+        list[selrow][selseat] = "B"
+        list[0][0] = " "
+
+        if (rows * seats <= 60) {
+            price = 10
+            totalprice += 10
+        } else {
+            if (rows % 2 != 0 && selrow in 0..(rows / 2)) {
+                price = 10
+                totalprice += 10
+            } else {
+                price = 8
+                totalprice += 8
+            }
+        }
+        println("\nTicket price: $$price \n")
+        showroom()
+
+//    if (select == 0 ) exit() else mainmenu()
+}
+
+fun showroom() {
+    list[0][0] = " "
+    println("Cinema:")
+    for ( r in 0..rows .toInt()) {
+        println(list[r].joinToString(" "))
+    }
+}
+
+fun mainmenu() {
+    while (select != 0) {
+        println("")
+        println("1. Show the seats")
+        println("2. Buy a ticket")
+        println("3. Statistics")
+        println("0. Exit")
+        print("> ")
+        select = readln().toInt()
+        when (select) {
+            1 -> showroom()
+            2 -> buy()
+            3 -> {
+                count()
+                statistics()
+            }
+            0 -> exit()
+        }
+    }
+}
+
+fun statistics() {
+
+    println("Number of purchased tickets: ${ptick.size}")
+    val percentage =  ptick.size * 100 / sizeofhall.toDouble()
+    val formatprecentage = "%.2f".format(percentage)
+    println("Percentage: $formatprecentage%")
+    println("Current income: $$totalprice")
+    println("Total income: $${totalpriceall}")
+}
+
+fun count(){
+    if (rows * seats <= 60) {
+        totalpriceall = 10
+    } else {
+        if (rows % 2 != 0) {
+            totalpriceall = ((((rows / 2 ) * 10) + ((rows / 2 + 1) * 8) )) * seats
+        } else {
+            totalpriceall = ((rows / 2 ) * 10 + (rows /2  * 8) ) * seats
+        }
+    }
+}
+
+fun exit(){
+    list.clear()
+}
+
